@@ -1,0 +1,38 @@
+NBA Fantasy Sports - Deep Learning strategy
+
+Questions:
+
+- Do players have streaks of performance?
+- Examine consistency for each player and create variance metric for each player
+
+- Does recent performance matter more than long-term performance?
+- Recent Stats vs. Career Averages vs. Both
+
+- Does defense of opposing team matter?
+- Include defensive stats of each player
+
+- Do matchups matter?
+- Include positional information i.e. if each OFF and DEF player is PG, SG, SF, PF, or C
+- optional: predict likely matchups based on physical characteristics and OFF/DEF rankings on each team, include vector of predicted matchup time for each players minutes
+
+- Do coaches experiment with lineups?
+- Are players given consistent minutes throughout season, or are their minutes varied at different times in the season? Could be different for different caliber players i.e. stars get consistent minutes, rotation players have more variation
+- Predicted minutes
+
+
+
+Recommendations:
+
+Each example must be IID (Independent and Identically Distributed)
+
+Independent requirement means that we should use games as basic unit. Each side of court can be taken to be independent, as offense and defense do not significantly affect each othe, meaning each game can provide two examples, one with Team1/Team2 as OFF/DEF and vice versa
+
+Identically distributed means using games within same rule era (modern rule era stretching back to early ?2000s? to predict games in 2017-18 season)
+
+x = features/stats for OFF players + features/stats for DEF players + predicted Pace
+y = predicted Fantasy Points (FP) for OFF players
+
+Features:
+OFF (all stats are Per 36)
+- Points
+- Rebounds

@@ -1,0 +1,41 @@
+Want to predict variations from expected output
+Can't just predict on career averages because this would be too obvious, instead want to predict varying factors
+
+we can expect a player to produce according to their averages, want to determine what alters that expectation
+
+- opposing defense: defensive stats for opposing players at same position, also frontcourt vs. backcourt players as altered matchups will likely be along the lines of SG switching to PG, not PF or even SF switching to PG. Maybe base on size and weight which is indicator of speed. Size, weight, and position likely determines range of players eligible for matchup against a certain player
+
+- player role: categorize players: slashers, 3 pt shooters, post up guys. Compare to defensive abilities against these roles. Hard to do without spatial data
+
+- variable minutes: someone higher or lower in rotation at same position/role is out, means that the players minutes will go up, and therefore their production
+
+- variable scoring option ranking: someone higher in scoring option order is out, that player will receive more opportunities
+
+- streaks: has player had above average production recently?
+
+- predict shot attempts: this is probably the most consciously controlled parameter by the team. The coach will tell players to take more or less shots, presumably there is some stability over short ranges of time as coaches vary their strategy
+
+
+- stats -> fantasy points, vector of [FP_pts, FP_offrebs, FP_defrebs, FP_asts, FP_stls, ..] to account for differing importance of stats in total FP
+- for rookie players, do k-nearest neighbor model on college stats of all rookies throughout seasons to predict opening season stats
+- OR just wait for mid season and use season stats 
+
+
+-selfishness metric: usage rate
+
+idea:
+
+first, build classifier to group players into classes
+train neural network on each group
+
+
+
+
+first try input vector:
+
+- players per 36 stats
+- players per 36 stats as percentage of current team lineup per 36
+- players height as z-score of current game's players heights
+- players minutes over last ~10 games scaled by 48 minutes (whole game)
+- positional info as binary vector [PG, SG, SF, PF, C], multiple positions could be 0.5 0.5
+- 

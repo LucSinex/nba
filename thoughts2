@@ -1,0 +1,20 @@
+model:
+
+1. projected minutes based on percentage of each team stat player is responsible
+2. 
+
+to start:
+
+np.dot(W, X) + b = Y
+
+X = percentage of team fantasy points per stat player responsible for (averaged over last 5, 10, 15, 20 etc. games)
+Y = fantasy pts
+
+
+things to try:
+- average + max + min for each stat
+- team totals
+- usage percentage (acts as specific inclusion of team totals, since it is an estimated usage rage based on team totals in derived formula)
+- offensive rating
+- defensive rating (by team and/or position)
+- position information acts as proxy for matchups in coordination with defensive rating by position
