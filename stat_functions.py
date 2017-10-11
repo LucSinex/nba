@@ -13,11 +13,11 @@ stat_categories = ['ast', 'blk', 'drb', 'fg', 'fg3', 'fg3_pct', 'fg3a',
                    'pf', 'pts', 'stl', 'tov', 'trb']
 
 def find_recent_avg(games_db, player_name, date):
-    print("Calculating Average for: " + player_name)
+#    print("Calculating Average for: " + player_name)
 
     begin_date = date - dateutil.relativedelta.relativedelta(months=1)
     end_date = date - dateutil.relativedelta.relativedelta(days=1)
-    print("Dates: " + str(begin_date) + " to " + str(end_date))
+#    print("Dates: " + str(begin_date) + " to " + str(end_date))
     
     pipeline = [
         {'$match': {"date": {"$gte": begin_date, "$lt": end_date}}},
@@ -73,6 +73,7 @@ def calculate_fp(statline):
 def game_stats(games_db, game_dict):
     stats = {}
     game_date = game_dict['date']
+    print("processing game with date: " + str(game_date))
     
     for i in range(0,2):
         key = "team_" + str(i)
@@ -80,18 +81,22 @@ def game_stats(games_db, game_dict):
         
         for player_dict in game_dict['box'][i]['players']:
             name = player_dict['player']
-            print("Name: " + name)
+#            print("Name: " + name)
             stats[key]['players'][name] = {}
             stats[key]['players'][name]['fp'] = calculate_fp(player_dict)
             stats[key]['players'][name]['recent_avg'] = find_recent_avg(games_db, name, game_date)
             
             player_recent_avg = stats[key]['players'][name]['recent_avg']
-            player_recent_avg['_id'] = 1
-            if (len(stats[key]['team_tot']) == 0):
-                stats[key]['team_tot'] = player_recent_avg
+            if (player_recent_avg == None):
+                stats[key]['players'].pop(name)
+                print ("Player popped: " + name)
             else:
-                for field in player_recent_avg:
-                    stats[key]['team_tot'][field] += player_recent_avg[field]
+                player_recent_avg['_id'] = 1
+                if (len(stats[key]['team_tot']) == 0):
+                    stats[key]['team_tot'] = player_recent_avg.copy()
+                else:
+                    for field in player_recent_avg:
+                        stats[key]['team_tot'][field] += player_recent_avg[field]
             
     return stats
 
