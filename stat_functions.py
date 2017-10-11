@@ -76,15 +76,23 @@ def game_stats(games_db, game_dict):
     
     for i in range(0,2):
         key = "team_" + str(i)
-        stats[key] = {}
+        stats[key] = {'players': {}, 'team_tot': {}}
         
         for player_dict in game_dict['box'][i]['players']:
             name = player_dict['player']
             print("Name: " + name)
-            stats[key][name] = {}
-            stats[key][name]['fp'] = calculate_fp(player_dict)
-            stats[key][name]['recent_avg'] = find_recent_avg(games_db, name, game_date)
-    
+            stats[key]['players'][name] = {}
+            stats[key]['players'][name]['fp'] = calculate_fp(player_dict)
+            stats[key]['players'][name]['recent_avg'] = find_recent_avg(games_db, name, game_date)
+            
+            player_recent_avg = stats[key]['players'][name]['recent_avg']
+            player_recent_avg['_id'] = 1
+            if (len(stats[key]['team_tot']) == 0):
+                stats[key]['team_tot'] = player_recent_avg
+            else:
+                for field in player_recent_avg:
+                    stats[key]['team_tot'][field] += player_recent_avg[field]
+            
     return stats
 
 
