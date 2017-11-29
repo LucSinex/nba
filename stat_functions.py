@@ -6,7 +6,8 @@ Created on Sun Oct  8 16:20:09 2017
 @author: luc
 """
 
-import dateutil
+import dateutil.relativedelta
+import numpy as np
 
 stat_categories = ['ast', 'blk', 'drb', 'fg', 'fg3', 'fg3_pct', 'fg3a', 
                    'fg_pct', 'fga', 'ft', 'ft_pct', 'fta', 'mp', 'orb', 
@@ -91,6 +92,7 @@ def game_stats(games_db, game_dict):
                 stats[key]['players'].pop(name)
                 print ("Player popped: " + name)
             else:
+                player_recent_avg['avg_fp'] = calculate_fp(player_recent_avg)
                 player_recent_avg['_id'] = 1
                 if (len(stats[key]['team_tot']) == 0):
                     stats[key]['team_tot'] = player_recent_avg.copy()
@@ -100,7 +102,23 @@ def game_stats(games_db, game_dict):
             
     return stats
 
-
+def recent_avgs_to_example(team_player_avgs, stats_used):
+    tpa = team_player_avgs
+    num_players = len(tpa)
+    
+    stats_arr = np.zeros((num_players, len(stats_used)))
+    fp_today_arr = np.zeros((num_players, 1))
+    
+    i = 0
+    for player in tpa:
+        for j in range(len(stats_used)):
+            stats_arr[i, j] = tpa[player]['recent_avg'][stats_used[j]]
+        i+=1
+        
+        fp_today_arr[i, 0] = tpa[player]['fp']
+    
+    return stats_arr, fp_today_arr
+    
 
 
 
