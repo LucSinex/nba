@@ -15,22 +15,30 @@ from sklearn.preprocessing import StandardScaler
 from sklearn.model_selection import KFold
 
 # Constants
-NUM_CLUSTERS = 3
+NUM_CLUSTERS = 5
 MAX_ITER = 5000
 
 # Load Data
-data = pd.read_csv('2008_09_10_midseason_1_month_avg_include_fp_avg_rounded.csv',
+#data = pd.read_csv('2008_09_10_midseason_1_month_avg_include_fp_avg_rounded.csv',
+#                   delimiter=' ')
+data = pd.read_csv('2008_09_10_midseason_1_month_avg_include_fp_avg_with_ids.csv',
                    delimiter=' ')
+with_ids = True
 
 # Find last index of data for separation later
-end_index = data.shape[1] - 1
+if (with_ids):
+    end_index = data.shape[1] - 4
+    d_vals = [arr[3:].tolist() for arr in data.values]
+else:
+    end_index = data.shape[1] - 1
+    d_vals = data.values
 
 # Create Kmeans clusterer and standardscaler
 km = KMeans(n_clusters=NUM_CLUSTERS)
 scaler = StandardScaler()
 
 # Permute data and divide into X and y
-permuted_data = np.random.permutation(data.values)
+permuted_data = np.random.permutation(d_vals)
 m = len(permuted_data)
 X_all = permuted_data[:, 0:end_index]
 y_all = permuted_data[:, end_index]

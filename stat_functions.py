@@ -27,6 +27,7 @@ def find_recent_avg(games_db, player_name, date):
         { '$match': {'box.players.player': player_name}},
         { '$group': {
                 '_id': None,
+                'player': { '$first': '$box.players.player'},
                 'games_used' : { '$sum': 1 }, 
                 'ast': {'$avg': '$box.players.ast'},
                 'blk': {'$avg': '$box.players.blk'},

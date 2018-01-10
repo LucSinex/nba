@@ -28,14 +28,15 @@ for year in years:
     games_by_year.append(gs)
     print(str(year) + ': ' + str(gs.count()))
     
-stats_used_arr = ['avg_fp', 'ast', 'blk', 'drb', 'fg', 'fga', 'fg_pct', 'fg3', 'fg3a', 
+stats_used_arr = ['player', 'avg_fp', 'ast', 'blk', 'drb', 'fg', 'fga', 'fg_pct', 'fg3', 'fg3a', 
                   'fg3_pct', 'ft', 'fta', 'ft_pct', 'mp', 'orb', 
                   'pf', 'pts', 'stl', 'tov', 'trb']
   
 #filename = '2008_09_10_midseason_1_month_team_avgs_include_fp_avg.csv'
 #row_type = 'team'
-filename = '2008_09_10_midseason_1_month_avg_include_fp_avg.csv'
+filename = '2008_09_10_midseason_1_month_avg_include_fp_avg_with_ids.csv'
 row_type = 'player' 
+proportional_stats = False
 
 try:
     os.remove(filename)
@@ -74,9 +75,10 @@ def recent_avgs_to_example(team_player_avgs, stats_used_arr):
     
 with open(filename, 'w', newline='') as csvfile:
     writer = csv.writer(csvfile, delimiter=' ',
-                        quotechar='|', quoting=csv.QUOTE_MINIMAL)
+                        quotechar='"', quoting=csv.QUOTE_MINIMAL)
     
-    col_names = stats_used_arr.copy()
+    col_names = ['game_id', 'team_id']
+    col_names = col_names + stats_used_arr
     if row_type == 'player':
         col_names.append('fp')
         writer.writerow(col_names)
@@ -102,7 +104,7 @@ with open(filename, 'w', newline='') as csvfile:
             print ("Game id: " + str(g['_id']))
             game_stats = stat_functions.game_stats(games, g)
             
-            for team in game_stats:
+            for team_idx, team in enumerate(game_stats):
                 team_tot = game_stats[team]['team_tot']
                 
                 if (row_type == "player"):
@@ -110,15 +112,18 @@ with open(filename, 'w', newline='') as csvfile:
             #            print ("Writing row {}: {}".format(str(i), player))
                         player_stats = game_stats[team]['players'][player]
                         
-                        row = []
+                        row = [g_counter, team_idx]
+                        
                         for field in stats_used_arr:
                             val = player_stats['recent_avg'][field]
                             team_val = team_tot[field]
                             
-                            if (field == 'avg_fp'):
-                                row.append(val)
-                            else:
+                            if (field == 'avg_fp' or field == 'player'):
+                                row.append(val)                            
+                            elif (proportional_stats == True):
                                 row.append(val / team_val)
+                            else:
+                                row.append(val)
             #            print (str(row[0]))
                         row.append(player_stats['fp'])
                         
